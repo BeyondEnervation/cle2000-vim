@@ -18,13 +18,20 @@ endif
 syn case ignore
 
 " -----------------------------------------------------------------------------
+" Top-level code container
+" -----------------------------------------------------------------------------
+" Make strings contained so they can only appear inside real code regions,
+" preventing stray quotes inside comments from starting strings during resync.
+syn region cle2000Code start=/\%1l\%1c/ end=/\%$/ transparent keepend contains=cle2000Comment,cle2000CommentBlock,cle2000StringSingle,cle2000StringDouble,cle2000Number,cle2000Float,cle2000Boolean,cle2000DollarIdent,cle2000Type,cle2000Assign,cle2000Shift,cle2000RelOp,cle2000Operator,cle2000OperatorWord,cle2000Conversion,cle2000Keyword,cle2000Label,cle2000Terminator,cle2000Illegal,cle2000ModuleBlock
+
+" -----------------------------------------------------------------------------
 " Comments
 " -----------------------------------------------------------------------------
 " Full-line star comments only when '*' is in column 1.
 syn match cle2000Comment /^\*.*/ contains=@Spell containedin=ALL display
 
 " Bang-to-end-of-line comments
-syn match cle2000Comment /!.*/ contains=@Spell display
+syn match cle2000Comment /!.*/ contains=@Spell containedin=ALL display
 
 " Block comments: (* ... *)
 syn region cle2000CommentBlock start="(\*" end="\*)" keepend contains=@Spell
@@ -41,9 +48,9 @@ syn match cle2000Terminator /;/
 " -----------------------------------------------------------------------------
 " Strings
 " -----------------------------------------------------------------------------
-" Practical Vim equivalent of the TextMate grammar's quoted-string handling
-syn region cle2000StringSingle start=+'+ skip=+''+ end=+'+ keepend
-syn region cle2000StringDouble start=+"+ skip=+""+ end=+"+ keepend
+" Strings are contained so they only start inside code regions that allow them.
+syn region cle2000StringSingle start=+'+ skip=+''+ end=+'+ keepend contained
+syn region cle2000StringDouble start=+"+ skip=+""+ end=+"+ keepend contained
 
 " -----------------------------------------------------------------------------
 " Numbers
@@ -99,6 +106,7 @@ syn match cle2000ModuleKeyword /\%(^\| \)\zs[A-Za-z][A-Za-z0-9_-]*\([+-:]\)\=/ c
 " Synchronization
 " -----------------------------------------------------------------------------
 syn sync minlines=200
+syn sync maxlines=500
 
 " -----------------------------------------------------------------------------
 " Highlight links
