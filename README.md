@@ -1,4 +1,4 @@
-# vim-cle2000
+# cle2000-vim
 
 Vim/Neovim syntax highlighting, filetype detection, and comment support for the CLE-2000 scripting language used with DRAGON (e.g. DRAGON5) reactor physics tools.
 
@@ -30,7 +30,7 @@ Content produced with the help ChatGPT-5.4 in the conversion of the original VS 
 ### lazy.nvim
 ```lua
 {
-  "BeyondEnervation/vim-cle2000",
+  "BeyondEnervation/cle2000-vim",
   ft = { "cle2000" },
   lazy=false,
 }
