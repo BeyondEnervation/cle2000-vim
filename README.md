@@ -66,3 +66,119 @@ Expected output:
 filetype=cle2000
 commentstring=* %s
 ```
+
+## Optional `mini.comment` integration for CLE-2000 with lazy.nvim
+
+This integration is **optional** and is intended for users of [`echasnovski/mini.comment`](https://github.com/echasnovski/mini.comment).
+
+It keeps the default CLE-2000 editor comment style as:
+
+```vim
+commentstring=! %s
+```
+
+while also making `gcc` behave nicely on existing first-column `*` comments:
+
+- normal code line: `gcc` uses `!`
+- line beginning with `*` in column 1: `gcc` removes that `*` comment instead of producing `! * ...`
+
+Users who want special `mini.comment` behavior can add the following config themselves by Creating a file such as:
+
+```text
+~/.config/nvim/lua/plugins/cle2000-mini-comment.lua
+```
+
+with this content:
+
+```lua
+local function cle2000_is_star_comment(line)
+    return line:match("^%*") ~= nil
+end
+
+local function cle2000_toggle_star_lines(line_start, line_end)
+    local lines = vim.api.nvim_buf_get_lines(0, line_start - 1, line_end, false)
+    local all_star = true
+
+    for _, line in ipairs(lines) do
+        if not cle2000_is_star_comment(line) then
+            all_star = false
+            break
+        end
+    end
+
+    if all_star then
+        for i, line in ipairs(lines) do
+            lines[i] = line:gsub("^%*", "", 1)
+        end
+        vim.api.nvim_buf_set_lines(0, line_start - 1, line_end, false, lines)
+        return true
+    end
+
+    return false
+end
+
+local function cle2000_toggle_comment_line()
+    local line_nr = vim.fn.line(".")
+    local line = vim.api.nvim_buf_get_lines(0, line_nr - 1, line_nr, false)[1] or ""
+
+    if cle2000_is_star_comment(line) then
+        local uncommented = line:gsub("^%*", "", 1)
+        vim.api.nvim_buf_set_lines(0, line_nr - 1, line_nr, false, { uncommented })
+    else
+        require("mini.comment").toggle_lines(line_nr, line_nr)
+    end
+end
+
+local function cle2000_toggle_comment_visual()
+    local start_line = vim.fn.line("v")
+    local end_line = vim.fn.line(".")
+
+    if start_line > end_line then
+        start_line, end_line = end_line, start_line
+    end
+
+    if not cle2000_toggle_star_lines(start_line, end_line) then
+        require("mini.comment").toggle_lines(start_line, end_line)
+    end
+end
+
+return {
+    {
+        "nvim-mini/mini.comment",
+        opts = function(_, opts)
+            opts = opts or {}
+            local old_options = opts.options or {}
+
+            opts.options = vim.tbl_deep_extend("force", old_options, {
+                custom_commentstring = function()
+                    if vim.bo.filetype == "cle2000" then
+                        return "! %s"
+                    end
+                end,
+            })
+
+            return opts
+        end,
+        init = function()
+            vim.api.nvim_create_autocmd("FileType", {
+                pattern = "cle2000",
+                callback = function(args)
+                    vim.bo[args.buf].commentstring = "! %s"
+
+                    vim.keymap.set("n", "gcc", cle2000_toggle_comment_line, {
+                        buffer = args.buf,
+                        desc = "Toggle CLE-2000 comment",
+                    })
+
+                    vim.keymap.set("x", "gc", function()
+                        cle2000_toggle_comment_visual()
+                    end, {
+                        buffer = args.buf,
+                        desc = "Toggle CLE-2000 comments",
+                    })
+                end,
+            })
+        end,
+    },
+}
+```
