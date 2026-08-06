@@ -20,9 +20,8 @@ syn case ignore
 " -----------------------------------------------------------------------------
 " Comments
 " -----------------------------------------------------------------------------
-" Full-line star comments, including indented lines like '   * comment'
-" containedin=ALL and display priority help prevent operator rules from winning.
-syn match cle2000Comment /^\s*\*.*/ contains=@Spell containedin=ALL display
+" Full-line star comments only when '*' is in column 1.
+syn match cle2000Comment /^\*.*/ contains=@Spell containedin=ALL display
 
 " Bang-to-end-of-line comments
 syn match cle2000Comment /!.*/ contains=@Spell display
@@ -69,8 +68,8 @@ syn keyword cle2000Type DOUBLE INTEGER LOGICAL REAL STRING
 syn match cle2000Assign /:=/
 syn match cle2000Shift /<<\|>>/
 syn match cle2000RelOp /<=\|>=\|<>\|<\|>\|=/
-" Exclude a leading '*' at start-of-line or after indentation so star comments win.
-syn match cle2000Operator /\%(^\s*\)\@<!\*\*\|\%(^\s*\)\@<![+\-*/]/
+" Exclude a leading '*' only in column 1 so true column-1 comments win.
+syn match cle2000Operator /\%(^\*\)\@<!\*\*\|\%(^\*\)\@<![+\-*/]/
 syn keyword cle2000OperatorWord COS SIN TAN ABS ARCCOS ARCSIN ARCTAN CHS EXP LN NOT SQRT
 syn keyword cle2000Conversion R_TO_I D_TO_I I_TO_R D_TO_R I_TO_D R_TO_D
 
@@ -130,4 +129,3 @@ hi def link cle2000ModuleLabel Label
 hi def link cle2000ModuleKeyword Keyword
 
 let b:current_syntax = 'cle2000'
-
