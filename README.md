@@ -69,7 +69,7 @@ commentstring=* %s
 
 ## Optional `mini.comment` integration for CLE-2000 with lazy.nvim
 
-This integration is **optional** and is intended for users of [`echasnovski/mini.comment`](https://github.com/echasnovski/mini.comment).
+This integration is **optional** and is intended for users of [`nvim-mini/mini.comment`](https://github.com/nvim-mini/mini.comment).
 
 It keeps the default CLE-2000 editor comment style as:
 
