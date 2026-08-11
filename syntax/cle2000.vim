@@ -28,13 +28,13 @@ syn region cle2000Code start=/\%1l\%1c/ end=/\%$/ transparent keepend contains=c
 " Comments
 " -----------------------------------------------------------------------------
 " Full-line star comments only when '*' is in column 1.
-syn match cle2000Comment /^\*.*/ contains=@Spell containedin=ALL display
+syn match cle2000Comment /^\*.*/ contains=@Spell containedin=ALL display extend
 
 " Bang-to-end-of-line comments
-syn match cle2000Comment /!.*/ contains=@Spell containedin=ALL display
+syn match cle2000Comment /!.*/ contains=@Spell containedin=ALL display extend
 
 " Block comments: (* ... *)
-syn region cle2000CommentBlock start="(\*" end="\*)" keepend contains=@Spell
+syn region cle2000CommentBlock start="(\*" end="\*)" keepend contains=@Spell extend
 
 " -----------------------------------------------------------------------------
 " Invalid / punctuation
