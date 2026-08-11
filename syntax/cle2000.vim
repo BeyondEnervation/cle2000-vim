@@ -22,16 +22,16 @@ syn case ignore
 " -----------------------------------------------------------------------------
 " Make strings contained so they can only appear inside real code regions,
 " preventing stray quotes inside comments from starting strings during resync.
-syn region cle2000Code start=/\%1l\%1c/ end=/\%$/ transparent keepend contains=cle2000Comment,cle2000CommentBlock,cle2000StringSingle,cle2000StringDouble,cle2000Number,cle2000Float,cle2000Boolean,cle2000DollarIdent,cle2000Type,cle2000Assign,cle2000Shift,cle2000RelOp,cle2000Operator,cle2000OperatorWord,cle2000Conversion,cle2000Keyword,cle2000Label,cle2000Terminator,cle2000Illegal,cle2000ModuleBlock
+syn region cle2000Code start=/\%1l\%1c/ end=/\%$/ transparent keepend contains=cle2000CommentStar,cle2000CommentBang,cle2000CommentBlock,cle2000StringSingle,cle2000StringDouble,cle2000Number,cle2000Float,cle2000Boolean,cle2000DollarIdent,cle2000Type,cle2000Assign,cle2000Shift,cle2000RelOp,cle2000Operator,cle2000OperatorWord,cle2000Conversion,cle2000Keyword,cle2000Label,cle2000Terminator,cle2000Illegal,cle2000ModuleBlock
 
 " -----------------------------------------------------------------------------
 " Comments
 " -----------------------------------------------------------------------------
 " Full-line star comments only when '*' is in column 1.
-syn match cle2000Comment /^\*.*/ contains=@Spell containedin=ALL display extend
-
-" Bang-to-end-of-line comments
-syn match cle2000Comment /!.*/ contains=@Spell containedin=ALL display extend
+syn match cle2000CommentStar /^\*.*/ contains=@Spell containedin=ALL display extend
+" Bang-to-end-of-line comments. Require non-string context by keeping strings
+" contained and only allowing comments from code regions.
+syn match cle2000CommentBang /!.*/ contains=@Spell display extend
 
 " Block comments: (* ... *)
 syn region cle2000CommentBlock start="(\*" end="\*)" keepend contains=@Spell extend
@@ -55,10 +55,10 @@ syn region cle2000StringDouble start=+"+ skip=+""+ end=+"+ keepend contained
 " -----------------------------------------------------------------------------
 " Numbers
 " -----------------------------------------------------------------------------
-syn match cle2000Number /\<[+-]\=\d\+\>/
 syn match cle2000Float /\<[+-]\=\(\d*\.\d\+\|\d\+\.\d*\)\([Ee][+-]\=\d\+\)\=\>/
 syn match cle2000Float /\<[+-]\=\(\d*\.?\d\+\|\d\+\.?\d*\)\([Dd][+-]\=\d\+\)\>/
 syn match cle2000Float /\<[+-]\=\(\d\+\.\d*\|\.\d\+\|\d\+\)\([eEdD][+-]\=\d\+\)\=\>/
+syn match cle2000Number /\<[+-]\=\d\+\>/
 
 " -----------------------------------------------------------------------------
 " Booleans, variables, and types
@@ -95,7 +95,7 @@ syn match cle2000Label /\<[A-Za-z][A-Za-z0-9-]*:/
 " -----------------------------------------------------------------------------
 " Module block support: :: ... ;
 " -----------------------------------------------------------------------------
-syn region cle2000ModuleBlock start=/::/ end=/\ze;/ keepend contains=cle2000Comment,cle2000CommentBlock,cle2000ModuleInput,cle2000ModuleOutput,cle2000ModuleLabel,cle2000ModuleKeyword,cle2000StringSingle,cle2000StringDouble,cle2000Number,cle2000Float,cle2000Boolean,cle2000DollarIdent,cle2000Type,cle2000Assign,cle2000Shift,cle2000RelOp,cle2000Operator,cle2000OperatorWord,cle2000Conversion,cle2000Keyword
+syn region cle2000ModuleBlock start=/::/ end=/\ze;/ keepend contains=cle2000CommentStar,cle2000CommentBang,cle2000CommentBlock,cle2000ModuleInput,cle2000ModuleOutput,cle2000ModuleLabel,cle2000ModuleKeyword,cle2000StringSingle,cle2000StringDouble,cle2000Number,cle2000Float,cle2000Boolean,cle2000DollarIdent,cle2000Type,cle2000Assign,cle2000Shift,cle2000RelOp,cle2000Operator,cle2000OperatorWord,cle2000Conversion,cle2000Keyword
 
 syn region cle2000ModuleInput start=/>>/ end=/<</ keepend contained contains=ALLBUT,cle2000ModuleBlock
 syn region cle2000ModuleOutput start=/<</ end=/>>/ keepend contained contains=ALLBUT,cle2000ModuleBlock
@@ -111,7 +111,8 @@ syn sync maxlines=500
 " -----------------------------------------------------------------------------
 " Highlight links
 " -----------------------------------------------------------------------------
-hi def link cle2000Comment Comment
+hi def link cle2000CommentStar Comment
+hi def link cle2000CommentBang Comment
 hi def link cle2000CommentBlock Comment
 hi def link cle2000Illegal Error
 hi def link cle2000Terminator Delimiter
@@ -137,3 +138,4 @@ hi def link cle2000ModuleLabel Label
 hi def link cle2000ModuleKeyword Keyword
 
 let b:current_syntax = 'cle2000'
+
