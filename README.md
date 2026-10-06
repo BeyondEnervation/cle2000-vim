@@ -1,6 +1,6 @@
 # cle2000-vim
 
-Vim/Neovim syntax highlighting, filetype detection, and comment support for the CLE-2000 scripting language used with DRAGON (e.g. DRAGON5) reactor physics tools, i.e. highlighting and commenting for `.x2m` and `.c2m` files.
+Vim/Neovim syntax highlighting, filetype detection, and comment support for the CLE-2000 scripting language used with DRAGON (e.g. DRAGON5) reactor physics tools, i.e. highlighting and commenting for `.x2m` and `.c2m` files. Highlight x2m or c2m files in vim or neovim (nvim) with ease to allow easier editing of dragon input files. 
 
 ## Attribution
 
