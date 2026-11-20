@@ -28,7 +28,7 @@ syn region cle2000Code start=/\%1l\%1c/ end=/\%$/ transparent keepend contains=c
 " Comments
 " -----------------------------------------------------------------------------
 " Full-line star comments only when '*' is in column 1.
-syn match cle2000CommentStar /^\*.*/ contains=@Spell containedin=ALL display extend
+syn match cle2000CommentStar /^\s*\*.*/ contains=@Spell containedin=ALL display extend
 " Bang-to-end-of-line comments. Require non-string context by keeping strings
 " contained and only allowing comments from code regions.
 syn match cle2000CommentBang /!.*/ contains=@Spell display extend
